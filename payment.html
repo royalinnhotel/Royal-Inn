@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .payment-container {
+            background: rgba(255, 255, 255, 0.25);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            backdrop-filter: blur(12px);
+            width: 90%;
+            max-width: 700px;
+            box-sizing: border-box;
+        }
+
+        .payment-container h1 {
+            margin-bottom: 40px;
+            color: #fff;
+            font-size: 2em;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .qr-code img {
+            width: 300px;
+            height: 400px; /* 3:4 aspect ratio */
+            border-radius: 15px;
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .qr-code img:hover {
+            transform: scale(1.05);
+        }
+
+        .payment-note {
+            margin-top: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        #payment-made-button {
+            margin-top: 30px;
+            padding: 12px 25px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        #payment-made-button:hover {
+            background-color: #4cae4c;
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+    <script>
+        function goToSuccess() {
+            window.location.href = "success.html";
+        }
+    </script>
+</head>
+<body>
+    <div class="payment-container">
+        <h1>Make Payment</h1>
+        <div class="qr-code">
+            <img src="qr_code.png" alt="QR Code">
+        </div>
+        <div class="payment-note">
+            *This payment is a booking fee and will be deducted from the total room cost.*
+        </div>
+        <button id="payment-made-button" onclick="goToSuccess()">I Have Made the Payment</button>
+    </div>
+</body>
+</html>

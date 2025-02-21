@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Successful</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f5f5f5; }
+        .container { width: 50%; margin: 50px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px gray; }
+        h2 { color: green; }
+        button { background-color: navy; color: white; padding: 12px; border: none; cursor: pointer; width: 100%; border-radius: 5px; margin-top: 20px; }
+        button:hover { background-color: gold; color: black; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Booking Successful!</h2>
+        <p>Thank you for booking with Royal Inn Hotel. You will receive a confirmation email shortly.</p>
+        <button onclick="goHome()">Go to Homepage</button>
+    </div>
+
+    <script>
+        function goHome() {
+            window.location.href = "index.html";
+        }
+
+        // Send confirmation email to the hotel
+        function sendEmail() {
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "send_email.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+            let params = "email=royal.inn.hotel.suratgarh@gmail.com&subject=New Booking Confirmation&message=A new booking has been made. Please check the details.";
+
+            xhr.send(params);
+        }
+
+        // Call function to send email on page load
+        window.onload = sendEmail;
+    </script>
+
+</body>
+</html>
