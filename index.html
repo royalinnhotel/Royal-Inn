@@ -63,6 +63,24 @@
     <div class="container">
         <h2>Book Your Stay at Royal Inn Hotel</h2>
         <form id="bookingForm">
+            <label for="rooms">Number of Rooms Required (1-6):</label>
+            <select id="rooms" required>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+            </select>
+            
+            <label for="adults">Number of Adults:</label>
+            <input type="number" id="adults" min="1" required oninput="updateRooms()">
+
+            <label for="children">Number of Children:</label>
+            <input type="number" id="children" min="0" required>
+            
+            <p><b>Note:</b> 1 Room = Max 2 Adults + 2 Children Allowed</p>
+            
             <label for="name">Full Name:</label>
             <input type="text" id="name" required>
 
@@ -89,7 +107,7 @@
 
             <label for="checkout">Check-out Date:</label>
             <input type="date" id="checkout" required>
-
+            
             <button type="button" onclick="proceedToPayment()">Proceed to Payment</button>
         </form>
     </div>
@@ -97,42 +115,48 @@
     <script>
         emailjs.init("T_cfoC9ZZENpLUI70");
 
-        function proceedToPayment() {
-            var formFields = ["name", "email", "aadhaar", "phone", "address", "departure", "destination", "checkin", "checkout"];
-            var formData = {};
-            
-            for (let field of formFields) {
-                let value = document.getElementById(field).value;
-                if (value === "") {
-                    alert("Please fill in all the details.");
-                    return;
-                }
-                formData[field] = value;
-            }
-            
-            let emailParams = {
-                to_email: "royal.inn.hotel.suratgarh@gmail.com",
-                customer_name: formData["name"],
-                customer_email: formData["email"],
-                customer_phone: formData["phone"],
-                customer_address: formData["address"],
-                customer_aadhaar: formData["aadhaar"],
-                departure_city: formData["departure"],
-                destination_city: formData["destination"],
-                checkin_date: formData["checkin"],
-                checkout_date: formData["checkout"]
-            };
+function proceedToPayment() {
+    var formFields = ["name", "email", "aadhaar", "phone", "address", "departure", "destination", "checkin", "checkout", "rooms", "adults", "children"];
+    var formData = {};
 
-            emailjs.send("service_jtt8iwm", "template_5q7nlzg", emailParams)
-            .then(function(response) {
-                console.log("Email sent successfully:", response);
-                let queryParams = formFields.map(field => `${field}=${encodeURIComponent(formData[field])}`).join("&");
-                window.location.href = `payment.html?${queryParams}`;
-            }, function(error) {
-                console.error("Email failed to send:", error);
-                alert("Failed to send booking confirmation email. Please try again.");
-            });
+    for (let field of formFields) {
+        let value = document.getElementById(field).value;
+        if (value === "") {
+            alert("Please fill in all the details.");
+            return;
         }
+        formData[field] = value;
+    }
+
+    // 📨 Email Template Data
+    let emailParams = {
+        customer_name: formData["name"],
+        customer_email: formData["email"],
+        customer_phone: formData["phone"],
+        customer_address: formData["address"],
+        customer_aadhaar: formData["aadhaar"],
+        departure_city: formData["departure"],
+        destination_city: formData["destination"],
+        checkin_date: formData["checkin"],
+        checkout_date: formData["checkout"],
+        number_of_rooms: formData["rooms"],
+        number_of_adults: formData["adults"],
+        number_of_children: formData["children"]
+    };
+
+    // 📩 Sending Email using EmailJS
+    emailjs.send("service_jtt8iwm", "template_5q7nlzg", emailParams)
+    .then(function(response) {
+        console.log("✅ Email sent successfully:", response);
+        
+        let queryParams = formFields.map(field => `${field}=${encodeURIComponent(formData[field])}`).join("&");
+        window.location.href = `payment.html?${queryParams}`;
+
+    }, function(error) {
+        console.error("❌ Email failed to send:", error);
+        alert("Failed to send booking confirmation email. Please try again.");
+    });
+}
     </script>
 </body>
 </html>
