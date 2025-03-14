@@ -31,23 +31,11 @@
         }
 
         .payment-container h1 {
-            margin-bottom: 40px;
+            margin-bottom: 20px;
             color: #fff;
             font-size: 2em;
             font-weight: 600;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .qr-code img {
-            width: 300px;
-            height: 400px; /* 3:4 aspect ratio */
-            border-radius: 15px;
-            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
-            transition: transform 0.2s ease;
-        }
-
-        .qr-code img:hover {
-            transform: scale(1.05);
         }
 
         .payment-note {
@@ -58,7 +46,7 @@
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
         }
 
-        #payment-made-button {
+        #pay-button {
             margin-top: 30px;
             padding: 12px 25px;
             background-color: #5cb85c;
@@ -68,30 +56,70 @@
             cursor: pointer;
             font-size: 1.1em;
             transition: background-color 0.3s ease, transform 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
         }
 
-        #payment-made-button:hover {
+        #pay-button:hover {
             background-color: #4cae4c;
             transform: scale(1.02);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+
+        .qr-code {
+            margin-top: 20px;
+        }
+
+        .important-note {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #ffeb3b;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
     </style>
     <script>
-        function goToSuccess() {
-            window.location.href = "success.html";
+        function calculateTotal() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const rooms = parseInt(urlParams.get('rooms')) || 1;
+            const checkin = new Date(urlParams.get('checkin'));
+            const checkout = new Date(urlParams.get('checkout'));
+            const adults = parseInt(urlParams.get('adults')) || 1;
+            const children = parseInt(urlParams.get('children')) || 0;
+            
+            let days = (checkout - checkin) / (1000 * 60 * 60 * 24);
+            if (days <= 0) days = 1;
+            
+            let adultCharge = (adults <= 2) ? 1300 : (Math.ceil(adults / 2) * 1300);
+            let childrenCharge = children * 150;
+            let totalAmount = (adultCharge + childrenCharge) * days;
+            
+            document.getElementById('total-amount').innerText = `Total: ₹${totalAmount}`;
+            
+            let upiLink = `upi://pay?pa=9306187070@ybl&pn=HotelRoyalInn&mc=1234&tid=TXN123456&tr=INV12345&tn=Hotel Booking&am=${totalAmount}&cu=INR`;
+            document.getElementById('pay-button').setAttribute('href', upiLink);
+            
+            // Generate QR Code dynamically
+            let qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
+            document.getElementById('qr-image').src = qrApi;
         }
+
+        window.onload = calculateTotal;
     </script>
 </head>
 <body>
     <div class="payment-container">
         <h1>Make Payment</h1>
+        <p id="total-amount">Calculating...</p>
+        <a id="pay-button" href="#">Pay Now</a>
         <div class="qr-code">
-            <img src="qr_code.png" alt="QR Code">
+            <img id="qr-image" src="" alt="Scan to Pay">
         </div>
-        <div class="payment-note">
-            *This payment is a booking fee and will be deducted from the total room cost.*
-        </div>
-        <button id="payment-made-button" onclick="goToSuccess()">I Have Made the Payment</button>
+        <p class="important-note">
+            * Please note: Cancellation requests may be considered at the discretion of the management. 
+            Once the payment is made, you will receive a confirmation email and a call from our team. 
+            In case your booking request is denied, you will receive a full refund. *
+        </p>
     </div>
 </body>
 </html>
